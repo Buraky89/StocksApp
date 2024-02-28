@@ -1,9 +1,9 @@
 ﻿using Newtonsoft.Json;
+using StocksApp.External.Fmp;
 using StocksApp.Interfaces;
 using StocksApp.Model;
 using System;
 using System.Collections.Generic;
-using System.DirectoryServices;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -17,9 +17,13 @@ namespace StocksApp.API
         private const string HistoricalChartEndpoint = "https://financialmodelingprep.com/api/v3/historical-chart/5min";
         private const string SearchEndpoint = "https://financialmodelingprep.com/api/v3/search";
 
+        // Create an instance of FmpMappers
+        private readonly FmpMappers _fmpMappers;
+
         public FmpApi(HttpClient httpClient)
         {
             _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
+            _fmpMappers = new FmpMappers(); // Initialize the mapper
         }
 
         public async Task<List<Stock>> GetStocksAsync()
@@ -27,9 +31,9 @@ namespace StocksApp.API
             var response = await _httpClient.GetAsync($"{StocksEndpoint}?apikey={ApiKey}");
             response.EnsureSuccessStatusCode();
             var content = await response.Content.ReadAsStringAsync();
-            var allStocks = JsonConvert.DeserializeObject<List<Stock>>(content);
+            var allStocks = JsonConvert.DeserializeObject<List<FmpStock>>(content);
             // Return only the top 5 items
-            return allStocks.GetRange(0, Math.Min(5, allStocks.Count));
+            return FmpStocksToStocks(allStocks);
         }
 
         public async Task<List<StockDetail>> GetStockDetailsAsync(string symbol)
@@ -41,12 +45,11 @@ namespace StocksApp.API
             var response = await _httpClient.GetAsync(detailsEndpoint);
             response.EnsureSuccessStatusCode();
             var content = await response.Content.ReadAsStringAsync();
-            var allDetails = JsonConvert.DeserializeObject<List<StockDetail>>(content);
+            var allDetails = JsonConvert.DeserializeObject<List<FmpStockDetail>>(content);
 
             // Return only the top 5 items
-            return allDetails.GetRange(0, Math.Min(5, allDetails.Count));
+            return FmpStockDetailsToStockDetails(allDetails);
         }
-
 
         public async Task<List<Stock>> SearchAsync(string query)
         {
@@ -58,36 +61,26 @@ namespace StocksApp.API
             var searchResults = JsonConvert.DeserializeObject<List<FmpSearchResult>>(content);
 
             // Return only the top 10 items
-            return MapSearchResultsToStocks(searchResults.GetRange(0, Math.Min(10, searchResults.Count)));
+            return FmpSearchResultToStocks(searchResults.GetRange(0, Math.Min(10, searchResults.Count)));
         }
 
-
-
-        private List<Stock> MapSearchResultsToStocks(List<FmpSearchResult> searchResults)
+        // Mapper method for converting FmpSearchResult to Stock
+        private List<Stock> FmpSearchResultToStocks(List<FmpSearchResult> searchResults)
         {
-            var stocks = new List<Stock>();
-            foreach (var result in searchResults)
-            {
-                stocks.Add(new Stock
-                {
-                    Symbol = result.Symbol,
-                    Exchange = result.StockExchange,
-                    ExchangeShortName = result.ExchangeShortName,
-                    Price = "", // You can assign default value or leave it blank
-                    Name = result.Name
-                });
-            }
-            return stocks;
+            // Use the FmpMappers instance to map search results to stocks
+            return _fmpMappers.FmpSearchResultToStocks(searchResults);
         }
 
-        internal class FmpSearchResult
+        // Mapper method for converting FmpStock to Stock
+        private List<Stock> FmpStocksToStocks(List<FmpStock> fmpStocks)
         {
-            public string Symbol { get; set; }
-            public string Name { get; set; }
-            public string Currency { get; set; }
-            public string StockExchange { get; set; }
-            public string ExchangeShortName { get; set; }
+            return _fmpMappers.FmpStocksToStocks(fmpStocks);
         }
 
+        // Mapper method for converting FmpStockDetail to StockDetail
+        private List<StockDetail> FmpStockDetailsToStockDetails(List<FmpStockDetail> fmpStockDetails)
+        {
+            return _fmpMappers.FmpStockDetailsToStockDetails(fmpStockDetails);
+        }
     }
 }
