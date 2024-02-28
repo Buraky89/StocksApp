@@ -41,7 +41,7 @@ namespace StocksApp.API
                 new DateRangeOption { Label = "15 Days", Value = 15, IsDefault = false },
                 new DateRangeOption { Label = "30 Days", Value = 30, IsDefault = false },
                 new DateRangeOption { Label = "90 Days", Value = 90, IsDefault = false },
-                new DateRangeOption { Label = "180 Months", Value = 180, IsDefault = false },
+                new DateRangeOption { Label = "180 Days", Value = 180, IsDefault = false },
                 new DateRangeOption { Label = "365 Days", Value = 365, IsDefault = false }
             };
         }
