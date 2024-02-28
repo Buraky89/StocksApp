@@ -1,23 +1,13 @@
 ﻿using StocksApp.API;
 using StocksApp.Interfaces;
 using StocksApp.Model;
-using System.Text;
+using System;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-
 
 namespace StocksApp
 {
-    /// <summary>
-    /// Interaction logic for StocksList.xaml
-    /// </summary>
     public partial class StocksList : Window
     {
         private readonly IStockApi _stockApi;
@@ -32,7 +22,14 @@ namespace StocksApp
 
         private async void LoadMockData()
         {
-            StocksListView.ItemsSource = await _stockApi.GetStocksAsync();
+            // Show loading text
+            LoadingText.Visibility = Visibility.Visible;
+            StocksListView.Visibility = Visibility.Collapsed;
+            var stocks = await _stockApi.GetStocksAsync();
+            StocksListView.ItemsSource = stocks;
+            // Hide loading text and show ListView
+            LoadingText.Visibility = Visibility.Collapsed;
+            StocksListView.Visibility = Visibility.Visible;
         }
 
         private void StocksListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -41,8 +38,6 @@ namespace StocksApp
             {
                 var detailWindow = new StocksDetail(selectedStock);
                 detailWindow.Show();
-
-
                 // Reset the selection in the ListView
                 StocksListView.SelectedItem = null;
             }
@@ -55,6 +50,9 @@ namespace StocksApp
                 try
                 {
                     var searchQuery = SearchBox.Text;
+                    // Show loading text
+                    LoadingText.Visibility = Visibility.Visible;
+                    StocksListView.Visibility = Visibility.Collapsed;
                     var searchResults = await _stockApi.SearchAsync(searchQuery);
                     StocksListView.ItemsSource = searchResults;
                 }
@@ -63,8 +61,13 @@ namespace StocksApp
                     MessageBox.Show($"Error during search: {ex.Message}");
                     // Handle exceptions or errors as appropriate
                 }
+                finally
+                {
+                    // Hide loading text and show ListView after search is complete
+                    LoadingText.Visibility = Visibility.Collapsed;
+                    StocksListView.Visibility = Visibility.Visible;
+                }
             }
         }
-
     }
 }
