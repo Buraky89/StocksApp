@@ -8,6 +8,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 
 namespace StocksApp.API
 {
@@ -42,6 +43,14 @@ namespace StocksApp.API
                     ExchangeShortName = "NASDAQ",
                     Price = "8.13",
                     Name = "Perella Weinberg Partners"
+                },
+                new Model.Stock
+                {
+                    Symbol =  "AAPL",
+                    Exchange =  "NASDAQ Global Select",
+                    ExchangeShortName = "NASDAQ",
+                    Price = "182.63",
+                    Name = "Apple Inc."
                 }
             };
             return stocks;
