@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -38,7 +39,12 @@ namespace StocksApp
                                       // Set other controls' text here based on the _stock object
 
 
-            // Assuming you have a ListView named StockDetailsListView in your XAML
+
+            StockName.Text = _stock.Name;
+            StockSymbol.Text = $"Symbol: {_stock.Symbol}";
+            StockExchange.Text = $"Exchange: {_stock.Exchange}";
+
+            // Mock data for detailed stock metrics
             StockDetailsListView.ItemsSource = StocksApi.GetMockStockDetails();
 
         }

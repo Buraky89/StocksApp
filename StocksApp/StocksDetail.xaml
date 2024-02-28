@@ -5,10 +5,18 @@
     <Grid Margin="10">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Button x:Name="BackButton" Content="Back" Grid.Row="0" Click="BackButton_Click"/>
-        <ListView x:Name="StockDetailsListView">
+        <!-- Additional Stock Information -->
+        <StackPanel Grid.Row="1" Margin="5">
+            <TextBlock x:Name="StockName" FontSize="18" FontWeight="Bold"/>
+            <TextBlock x:Name="StockSymbol"/>
+            <TextBlock x:Name="StockExchange"/>
+        </StackPanel>
+        <!-- Detailed Stock Metrics -->
+        <ListView x:Name="StockDetailsListView" Grid.Row="2">
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="Date" DisplayMemberBinding="{Binding Date}" />
@@ -20,6 +28,5 @@
                 </GridView>
             </ListView.View>
         </ListView>
-
     </Grid>
 </Window>
