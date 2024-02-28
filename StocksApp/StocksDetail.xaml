@@ -1,0 +1,20 @@
+﻿<Window x:Class="StocksApp.StocksDetail"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Stock Detail" Height="450" Width="800">
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Button x:Name="BackButton" Content="Back" Grid.Row="0" Click="BackButton_Click"/>
+        <StackPanel Grid.Row="1">
+            <TextBlock Text="{Binding date}" FontWeight="Bold"/>
+            <TextBlock Text="Open: {Binding open}"/>
+            <TextBlock Text="Low: {Binding low}"/>
+            <TextBlock Text="High: {Binding high}"/>
+            <TextBlock Text="Close: {Binding close}"/>
+            <TextBlock Text="Volume: {Binding volume}"/>
+        </StackPanel>
+    </Grid>
+</Window>
