@@ -39,7 +39,7 @@ namespace StocksApp
             {
                 Title = "High",
                 Values = new ChartValues<DateTimePoint>(),
-                PointGeometry = DefaultGeometries.Square,
+                PointGeometry = DefaultGeometries.None,
                 PointGeometrySize = 15
             };
 
