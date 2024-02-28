@@ -4,6 +4,8 @@ using System.Data;
 using System.Windows;
 using Microsoft.Extensions.DependencyInjection;
 using StocksApp.Interfaces;
+using StocksApp.Caching;
+using System.Net.Http;
 
 namespace StocksApp
 {
@@ -23,7 +25,9 @@ namespace StocksApp
 
         private void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton<IStockApi, MockStockApi>();
+            services.AddSingleton<IStockApi, FmpApi>();
+            services.AddHttpClient();
+
             services.AddSingleton<StocksList>();
         }
 
