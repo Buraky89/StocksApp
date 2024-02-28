@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using StocksApp.Model;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -26,6 +27,19 @@ namespace StocksApp
         private void LoadMockData()
         {
             StocksListView.ItemsSource = StocksApi.GetMockStocks();
+        }
+
+        private void StocksListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (StocksListView.SelectedItem is Stock selectedStock)
+            {
+                var detailWindow = new StocksDetail(selectedStock);
+                detailWindow.Show();
+
+
+                // Reset the selection in the ListView
+                StocksListView.SelectedItem = null;
+            }
         }
 
     }

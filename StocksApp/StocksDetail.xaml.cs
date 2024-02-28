@@ -1,4 +1,5 @@
-﻿using System;
+﻿using StocksApp.Model;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,11 +19,23 @@ namespace StocksApp
     /// <summary>
     /// Interaktionslogik für StocksDetail.xaml
     /// </summary>
+    // In StocksDetail.xaml.cs
     public partial class StocksDetail : Window
     {
-        public StocksDetail()
+        private Stock _stock;
+
+        public StocksDetail(Stock stock)
         {
             InitializeComponent();
+            _stock = stock;
+            LoadStockDetails();
+        }
+
+        private void LoadStockDetails()
+        {
+            // Assuming you have TextBlocks or other controls to show these details
+            this.Title = _stock.Name; // Example of setting the window title to the stock name
+                                      // Set other controls' text here based on the _stock object
         }
 
         private void BackButton_Click(object sender, RoutedEventArgs e)
@@ -33,6 +46,6 @@ namespace StocksApp
 
             // If you're using a navigation service or a more complex navigation structure, you would call that service/method here instead.
         }
-
     }
+
 }

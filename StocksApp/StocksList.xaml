@@ -8,7 +8,7 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <TextBox x:Name="SearchBox" Grid.Row="0" Margin="10"/>
-        <ListView x:Name="StocksListView" Grid.Row="1" Margin="10">
+        <ListView x:Name="StocksListView" Grid.Row="1" Margin="10" SelectionChanged="StocksListView_SelectionChanged">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <StackPanel>
