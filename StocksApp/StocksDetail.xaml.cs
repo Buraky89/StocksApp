@@ -31,6 +31,14 @@ namespace StocksApp
 
             LoadTimelineOptionButtons();
             LoadStocksDateRangeButtons();
+            SetStockDetails();
+        }
+        private void SetStockDetails()
+        {
+            this.Title = _stock.Name;
+            StockName.Text = _stock.Name;
+            StockSymbol.Text = $"Symbol: {_stock.Symbol}";
+            StockExchange.Text = $"Exchange: {_stock.Exchange}";
         }
 
         private SeriesCollection GenerateSeriesFromStockDetails(IEnumerable<StockDetail> stockDetails)
