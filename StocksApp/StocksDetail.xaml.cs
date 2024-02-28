@@ -135,7 +135,7 @@ namespace StocksApp
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"Error loading stock 222222222details: {ex.Message}");
+                    MessageBox.Show($"Error loading stock details: {ex.Message}");
                     // Handle error loading stock details
                 }
                 finally
@@ -163,7 +163,7 @@ namespace StocksApp
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"Error loading stock 11111111details: {ex.Message}");
+                    MessageBox.Show($"Error loading stock details: {ex.Message}");
                     // Handle error loading stock details
                 }
                 finally
