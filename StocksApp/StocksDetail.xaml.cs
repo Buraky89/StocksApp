@@ -128,32 +128,41 @@ namespace StocksApp
             }
         }
 
+        private async Task LoadAndDisplayStockDetails(string timelineOption, int days)
+        {
+            try
+            {
+                LoadingText.Visibility = Visibility.Visible;
+                StockDetailsListView.Visibility = Visibility.Collapsed;
+
+                var stockDetails = await _stockApi.GetStockDetailsAsync(_stock.Symbol, timelineOption, days);
+                var series = GenerateSeriesFromStockDetails(stockDetails);
+                UpdateChart(series);
+
+                StockDetailsListView.ItemsSource = stockDetails;
+                StockDetailsListView.Visibility = Visibility.Visible;
+            }
+            catch (Exception ex)
+            {
+                StockDetailsListView.Visibility = Visibility.Hidden;
+                LoadingText.Visibility = Visibility.Visible;
+                LoadingText.Text = "Error";
+                Chart.Visibility = Visibility.Hidden;
+                MessageBox.Show($"Error loading stock details: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            finally
+            {
+                LoadingText.Visibility = Visibility.Collapsed;
+            }
+        }
+
+
         private async void TimelineOptionButton_Click(object sender, RoutedEventArgs e)
         {
             if (sender is Button button && button.Tag is string timelineOptionValue)
             {
-                try
-                {
-                    _desiredTimelineOption = timelineOptionValue;
-
-                    LoadingText.Visibility = Visibility.Visible;
-                    StockDetailsListView.Visibility = Visibility.Collapsed;
-
-                    var stockDetails = await _stockApi.GetStockDetailsAsync(_stock.Symbol, _desiredTimelineOption, _howManyDays);
-                    var series = GenerateSeriesFromStockDetails(stockDetails);
-                    UpdateChart(series);
-
-                    StockDetailsListView.ItemsSource = stockDetails;
-                    StockDetailsListView.Visibility = Visibility.Visible;
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"Error loading stock details: {ex.Message}");
-                }
-                finally
-                {
-                    LoadingText.Visibility = Visibility.Collapsed;
-                }
+                _desiredTimelineOption = timelineOptionValue;
+                await LoadAndDisplayStockDetails(_desiredTimelineOption, _howManyDays);
             }
         }
 
@@ -161,28 +170,8 @@ namespace StocksApp
         {
             if (sender is Button button && button.Tag is int dateRangeOptionValue)
             {
-                try
-                {
-                    _howManyDays = dateRangeOptionValue;
-
-                    LoadingText.Visibility = Visibility.Visible;
-                    StockDetailsListView.Visibility = Visibility.Collapsed;
-
-                    var stockDetails = await _stockApi.GetStockDetailsAsync(_stock.Symbol, _desiredTimelineOption, _howManyDays);
-                    var series = GenerateSeriesFromStockDetails(stockDetails);
-                    UpdateChart(series);
-
-                    StockDetailsListView.ItemsSource = stockDetails;
-                    StockDetailsListView.Visibility = Visibility.Visible;
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"Error loading stock details: {ex.Message}");
-                }
-                finally
-                {
-                    LoadingText.Visibility = Visibility.Collapsed;
-                }
+                _howManyDays = dateRangeOptionValue;
+                await LoadAndDisplayStockDetails(_desiredTimelineOption, _howManyDays);
             }
         }
 
