@@ -19,6 +19,7 @@ namespace StocksApp
         private readonly IStockApi _stockApi;
         private string _desiredTimelineOption = "5min";
         private int _howManyDays = 15;
+        private bool _isChartVisible = true; // Track visibility state of Chart
 
 
         public StocksDetail(Stock stock, IStockApi stockApi)
@@ -121,6 +122,17 @@ namespace StocksApp
                 StockDetailsListView.ItemsSource = stockDetails;
                 StockDetailsListView.Visibility = Visibility.Visible;
                 LoadingText.Visibility = Visibility.Collapsed;
+
+                if (_isChartVisible)
+                {
+                    Chart.Visibility = Visibility.Visible;
+                    StockDetailsListView.Visibility = Visibility.Collapsed;
+                }
+                else
+                {
+                    Chart.Visibility = Visibility.Collapsed;
+                    StockDetailsListView.Visibility = Visibility.Visible;
+                }
             }
             catch (Exception ex)
             {
@@ -152,6 +164,22 @@ namespace StocksApp
                 _howManyDays = dateRangeOptionValue;
                 await LoadAndDisplayStockDetails(_desiredTimelineOption, _howManyDays);
             }
+        }
+
+        private void ToggleChartVisibility()
+        {
+            // Toggle visibility state
+            _isChartVisible = !_isChartVisible;
+
+            // Update visibility based on the toggle state
+            Chart.Visibility = _isChartVisible ? Visibility.Visible : Visibility.Collapsed;
+            StockDetailsListView.Visibility = _isChartVisible ? Visibility.Collapsed : Visibility.Visible;
+        }
+
+        private void ChartVisibilitySwitch_Click(object sender, RoutedEventArgs e)
+        {
+            // Call the toggle function when the button is clicked
+            ToggleChartVisibility();
         }
 
     }
