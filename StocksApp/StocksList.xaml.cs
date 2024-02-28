@@ -12,11 +12,10 @@ namespace StocksApp
     {
         private readonly IStockApi _stockApi;
 
-        public StocksList()
+        public StocksList(IStockApi stockApi)
         {
             InitializeComponent();
-            // TODO: setup dependency injection and remove this
-            _stockApi = new FmpApi(new System.Net.Http.HttpClient());
+            _stockApi = stockApi;
             LoadMockData();
         }
 
@@ -36,7 +35,7 @@ namespace StocksApp
         {
             if (StocksListView.SelectedItem is Stock selectedStock)
             {
-                var detailWindow = new StocksDetail(selectedStock);
+                var detailWindow = new StocksDetail(selectedStock, _stockApi);
                 detailWindow.Show();
                 // Reset the selection in the ListView
                 StocksListView.SelectedItem = null;

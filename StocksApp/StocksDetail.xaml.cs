@@ -20,12 +20,11 @@ namespace StocksApp
         private string _desiredTimelineOption = "5min";
         private int _howManyDays = 15;
 
-        public StocksDetail(Stock stock)
+        public StocksDetail(Stock stock, IStockApi stockApi)
         {
             InitializeComponent();
             _stock = stock;
-            // TODO: setup dependency injection and remove this
-            _stockApi = new FmpApi(new System.Net.Http.HttpClient());
+            _stockApi = stockApi;
             LoadStockDetails();
             LoadTimelineOptionButtons();
             LoadStocksDateRangeButtons();
