@@ -26,6 +26,7 @@ namespace StocksApp
             _stockApi = new FmpApi(new System.Net.Http.HttpClient());
             LoadStockDetails();
             LoadTimelineOptionButtons();
+            LoadStocksDateRangeButtons();
         }
 
         private async void LoadStockDetails()
@@ -102,6 +103,20 @@ namespace StocksApp
             }
         }
 
+        private void LoadStocksDateRangeButtons()
+        {
+            foreach (var dateRangeOption in _stockApi.DateRangeOptions)
+            {
+                var button = new Button
+                {
+                    Content = dateRangeOption.Label,
+                    Tag = dateRangeOption.Value
+                };
+                button.Click += DateRangeOptionButton_Click;
+                StocksDateRangePanel.Children.Add(button);
+            }
+        }
+
         private async void TimelineOptionButton_Click(object sender, RoutedEventArgs e)
         {
             if (sender is Button button && button.Tag is string timelineOptionValue)
@@ -112,7 +127,7 @@ namespace StocksApp
                     StockDetailsListView.Visibility = Visibility.Collapsed; // Hide stock details
 
                     // Load stock details for the selected timeline option
-                    var stockDetails = await _stockApi.GetStockDetailsAsync(_stock.Symbol, timelineOptionValue);
+                    var stockDetails = await _stockApi.GetStockDetailsAsync(_stock.Symbol, timelineOptionValue, 15);
 
                     // Update UI with loaded stock details
                     StockDetailsListView.ItemsSource = stockDetails;
@@ -120,7 +135,35 @@ namespace StocksApp
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"Error loading stock details: {ex.Message}");
+                    MessageBox.Show($"Error loading stock 222222222details: {ex.Message}");
+                    // Handle error loading stock details
+                }
+                finally
+                {
+                    LoadingText.Visibility = Visibility.Collapsed; // Hide loading text
+                }
+            }
+        }
+
+        private async void DateRangeOptionButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button button && button.Tag is int dateRangeOptionValue)
+            {
+                try
+                {
+                    LoadingText.Visibility = Visibility.Visible; // Show loading text
+                    StockDetailsListView.Visibility = Visibility.Collapsed; // Hide stock details
+
+                    // Load stock details for the selected timeline option
+                    var stockDetails = await _stockApi.GetStockDetailsAsync(_stock.Symbol, "5min", dateRangeOptionValue);
+
+                    // Update UI with loaded stock details
+                    StockDetailsListView.ItemsSource = stockDetails;
+                    StockDetailsListView.Visibility = Visibility.Visible; // Show stock details
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error loading stock 11111111details: {ex.Message}");
                     // Handle error loading stock details
                 }
                 finally

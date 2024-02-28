@@ -14,6 +14,7 @@ namespace StocksApp.API
     public class MockStockApi : IStockApi
     {
         public List<TimelineOption> TimelineOptions { get; private set; }
+        public List<DateRangeOption> DateRangeOptions { get; private set; }
         public MockStockApi()
         {
             TimelineOptions = new List<TimelineOption>
@@ -21,6 +22,12 @@ namespace StocksApp.API
                 new TimelineOption { Label = "5M", Value = "5min", IsDefault = true },
                 new TimelineOption { Label = "1H", Value = "1hour", IsDefault = false },
                 new TimelineOption { Label = "1Y", Value = "1year", IsDefault = false }
+            };
+            DateRangeOptions = new List<DateRangeOption>
+            {
+                new DateRangeOption { Label = "1 Day", Value = 1, IsDefault = true },
+                new DateRangeOption { Label = "15 Days", Value = 15, IsDefault = false },
+                new DateRangeOption { Label = "1 Month", Value = 30, IsDefault = false }
             };
         }
 
@@ -40,7 +47,7 @@ namespace StocksApp.API
             return stocks;
         }
 
-        public async Task<List<StockDetail>> GetStockDetailsAsync(string symbol, string desiredTimelineOption = "5min")
+        public async Task<List<StockDetail>> GetStockDetailsAsync(string symbol, string desiredTimelineOption = "5min", int desiredDateRangeOption = 15)
         {
             return new List<StockDetail>
         {

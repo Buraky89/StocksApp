@@ -8,6 +8,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="300"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
@@ -24,8 +25,11 @@
         <WrapPanel x:Name="TimelineOptionPanel" Grid.Row="2" Margin="5" Orientation="Horizontal">
             <!-- Buttons will be added dynamically here -->
         </WrapPanel>
+        <WrapPanel x:Name="StocksDateRangePanel" Grid.Row="3" Margin="5" Orientation="Horizontal">
+            <!-- Buttons for date range will be added dynamically here -->
+        </WrapPanel>
         <!-- Stocks Graph -->
-        <lvc:CartesianChart x:Name="Chart" Grid.Row="3" Zoom="Xy">
+        <lvc:CartesianChart x:Name="Chart" Grid.Row="4" Zoom="Xy">
             <lvc:CartesianChart.AxisX>
                 <lvc:Axis Title="Date" LabelFormatter="{Binding DateFormatter}"></lvc:Axis>
             </lvc:CartesianChart.AxisX>
@@ -36,7 +40,7 @@
 
 
         <!-- Detailed Stock Metrics -->
-        <ListView x:Name="StockDetailsListView" Grid.Row="4" Visibility="Collapsed">
+        <ListView x:Name="StockDetailsListView" Grid.Row="5" Visibility="Collapsed">
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="Date" DisplayMemberBinding="{Binding Date}" />
