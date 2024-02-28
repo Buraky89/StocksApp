@@ -17,6 +17,8 @@ namespace StocksApp
     {
         private Stock _stock;
         private readonly IStockApi _stockApi;
+        private string _desiredTimelineOption = "5min";
+        private int _howManyDays = 15;
 
         public StocksDetail(Stock stock)
         {
@@ -133,26 +135,25 @@ namespace StocksApp
             {
                 try
                 {
-                    LoadingText.Visibility = Visibility.Visible; // Show loading text
-                    StockDetailsListView.Visibility = Visibility.Collapsed; // Hide stock details
+                    _desiredTimelineOption = timelineOptionValue;
 
-                    // Load stock details for the selected timeline option
-                    var stockDetails = await _stockApi.GetStockDetailsAsync(_stock.Symbol, timelineOptionValue, 15);
+                    LoadingText.Visibility = Visibility.Visible;
+                    StockDetailsListView.Visibility = Visibility.Collapsed;
+
+                    var stockDetails = await _stockApi.GetStockDetailsAsync(_stock.Symbol, _desiredTimelineOption, _howManyDays);
                     var series = GenerateSeriesFromStockDetails(stockDetails);
                     UpdateChart(series);
 
-                    // Update UI with loaded stock details
                     StockDetailsListView.ItemsSource = stockDetails;
-                    StockDetailsListView.Visibility = Visibility.Visible; // Show stock details
+                    StockDetailsListView.Visibility = Visibility.Visible;
                 }
                 catch (Exception ex)
                 {
                     MessageBox.Show($"Error loading stock details: {ex.Message}");
-                    // Handle error loading stock details
                 }
                 finally
                 {
-                    LoadingText.Visibility = Visibility.Collapsed; // Hide loading text
+                    LoadingText.Visibility = Visibility.Collapsed;
                 }
             }
         }
@@ -163,28 +164,28 @@ namespace StocksApp
             {
                 try
                 {
-                    LoadingText.Visibility = Visibility.Visible; // Show loading text
-                    StockDetailsListView.Visibility = Visibility.Collapsed; // Hide stock details
+                    _howManyDays = dateRangeOptionValue;
 
-                    // Load stock details for the selected timeline option
-                    var stockDetails = await _stockApi.GetStockDetailsAsync(_stock.Symbol, "5min", dateRangeOptionValue);
+                    LoadingText.Visibility = Visibility.Visible;
+                    StockDetailsListView.Visibility = Visibility.Collapsed;
+
+                    var stockDetails = await _stockApi.GetStockDetailsAsync(_stock.Symbol, _desiredTimelineOption, _howManyDays);
                     var series = GenerateSeriesFromStockDetails(stockDetails);
                     UpdateChart(series);
 
-                    // Update UI with loaded stock details
                     StockDetailsListView.ItemsSource = stockDetails;
-                    StockDetailsListView.Visibility = Visibility.Visible; // Show stock details
+                    StockDetailsListView.Visibility = Visibility.Visible;
                 }
                 catch (Exception ex)
                 {
                     MessageBox.Show($"Error loading stock details: {ex.Message}");
-                    // Handle error loading stock details
                 }
                 finally
                 {
-                    LoadingText.Visibility = Visibility.Collapsed; // Hide loading text
+                    LoadingText.Visibility = Visibility.Collapsed;
                 }
             }
         }
+
     }
 }
