@@ -4,6 +4,12 @@ using StocksApp.Model;
 using System;
 using System.Windows;
 using System.Windows.Controls;
+using LiveCharts;
+using LiveCharts.Wpf;
+using LiveCharts.Wpf.Charts.Base;
+using LiveCharts.Defaults;
+using System.DirectoryServices.ActiveDirectory;
+using System.Globalization;
 
 namespace StocksApp
 {
@@ -24,24 +30,54 @@ namespace StocksApp
 
         private async void LoadStockDetails()
         {
-            // Show loading text
-            LoadingText.Visibility = Visibility.Visible;
-            StockDetailsListView.Visibility = Visibility.Collapsed;
+            try
+            {
+                LoadingText.Text = "Loading...";
+                LoadingText.Visibility = Visibility.Visible;
+                StockDetailsListView.Visibility = Visibility.Collapsed;
 
-            // Assuming you have TextBlocks or other controls to show these details
-            this.Title = _stock.Name; // Example of setting the window title to the stock name
-                                      // Set other controls' text here based on the _stock object
+                this.Title = _stock.Name;
 
-            StockName.Text = _stock.Name;
-            StockSymbol.Text = $"Symbol: {_stock.Symbol}";
-            StockExchange.Text = $"Exchange: {_stock.Exchange}";
+                StockName.Text = _stock.Name;
+                StockSymbol.Text = $"Symbol: {_stock.Symbol}";
+                StockExchange.Text = $"Exchange: {_stock.Exchange}";
 
-            // Mock data for detailed stock metrics
-            StockDetailsListView.ItemsSource = await _stockApi.GetStockDetailsAsync(_stock.Symbol);
+                var stockDetails = await _stockApi.GetStockDetailsAsync(_stock.Symbol);
 
-            // Hide loading text and show ListView after data is loaded
-            LoadingText.Visibility = Visibility.Collapsed;
-            StockDetailsListView.Visibility = Visibility.Visible;
+                // Setup the chart
+                var series = new LineSeries
+                {
+                    Title = "High",
+                    Values = new ChartValues<DateTimePoint>(),
+                    PointGeometry = DefaultGeometries.Square,
+                    PointGeometrySize = 15
+                };
+
+                foreach (var detail in stockDetails)
+                {
+                    string dateString = detail.Date;
+                    string format = "yyyy-MM-dd HH:mm:ss";
+                    CultureInfo provider = CultureInfo.InvariantCulture;
+                    DateTime parsedDate = DateTime.ParseExact(dateString, format, provider);
+
+                    series.Values.Add(new DateTimePoint(parsedDate, Convert.ToDouble(detail.High)));
+                }
+
+                Chart.Series = new SeriesCollection { series };
+                Chart.AxisX[0].LabelFormatter = value => new DateTime((long)value).ToString("d");
+
+
+
+                LoadingText.Visibility = Visibility.Collapsed; // Hide loading text after successful load
+                StockDetailsListView.ItemsSource = stockDetails;
+                StockDetailsListView.Visibility = Visibility.Visible;
+            }
+            catch (Exception ex)
+            {
+                LoadingText.Text = "Error";
+                MessageBox.Show($"Error loading stock details: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+
         }
 
         private void BackButton_Click(object sender, RoutedEventArgs e)
