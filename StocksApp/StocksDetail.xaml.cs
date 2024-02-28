@@ -45,28 +45,8 @@ namespace StocksApp
 
                 var stockDetails = await _stockApi.GetStockDetailsAsync(_stock.Symbol);
 
-                // Setup the chart
-                var series = new LineSeries
-                {
-                    Title = "High",
-                    Values = new ChartValues<DateTimePoint>(),
-                    PointGeometry = DefaultGeometries.Square,
-                    PointGeometrySize = 15
-                };
-
-                foreach (var detail in stockDetails)
-                {
-                    string dateString = detail.Date;
-                    string format = "yyyy-MM-dd HH:mm:ss";
-                    CultureInfo provider = CultureInfo.InvariantCulture;
-                    DateTime parsedDate = DateTime.ParseExact(dateString, format, provider);
-
-                    series.Values.Add(new DateTimePoint(parsedDate, Convert.ToDouble(detail.High)));
-                }
-
-                Chart.Series = new SeriesCollection { series };
-                Chart.AxisX[0].LabelFormatter = value => new DateTime((long)value).ToString("d");
-
+                var series = GenerateSeriesFromStockDetails(stockDetails);
+                UpdateChart(series);
 
 
                 LoadingText.Visibility = Visibility.Collapsed; // Hide loading text after successful load
@@ -80,6 +60,36 @@ namespace StocksApp
             }
 
         }
+
+        private SeriesCollection GenerateSeriesFromStockDetails(IEnumerable<StockDetail> stockDetails)
+        {
+            var series = new LineSeries
+            {
+                Title = "High",
+                Values = new ChartValues<DateTimePoint>(),
+                PointGeometry = DefaultGeometries.Square,
+                PointGeometrySize = 15
+            };
+
+            foreach (var detail in stockDetails)
+            {
+                string dateString = detail.Date;
+                string format = "yyyy-MM-dd HH:mm:ss";
+                CultureInfo provider = CultureInfo.InvariantCulture;
+                DateTime parsedDate = DateTime.ParseExact(dateString, format, provider);
+
+                series.Values.Add(new DateTimePoint(parsedDate, Convert.ToDouble(detail.High)));
+            }
+
+            return new SeriesCollection { series };
+        }
+
+        private void UpdateChart(SeriesCollection series)
+        {
+            Chart.Series = series;
+            Chart.AxisX[0].LabelFormatter = value => new DateTime((long)value).ToString("d");
+        }
+
 
         private void BackButton_Click(object sender, RoutedEventArgs e)
         {
@@ -128,6 +138,8 @@ namespace StocksApp
 
                     // Load stock details for the selected timeline option
                     var stockDetails = await _stockApi.GetStockDetailsAsync(_stock.Symbol, timelineOptionValue, 15);
+                    var series = GenerateSeriesFromStockDetails(stockDetails);
+                    UpdateChart(series);
 
                     // Update UI with loaded stock details
                     StockDetailsListView.ItemsSource = stockDetails;
@@ -156,6 +168,8 @@ namespace StocksApp
 
                     // Load stock details for the selected timeline option
                     var stockDetails = await _stockApi.GetStockDetailsAsync(_stock.Symbol, "5min", dateRangeOptionValue);
+                    var series = GenerateSeriesFromStockDetails(stockDetails);
+                    UpdateChart(series);
 
                     // Update UI with loaded stock details
                     StockDetailsListView.ItemsSource = stockDetails;
