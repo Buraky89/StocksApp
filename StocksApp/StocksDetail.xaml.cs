@@ -2,27 +2,10 @@
 using StocksApp.Interfaces;
 using StocksApp.Model;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace StocksApp
 {
-    /// <summary>
-    /// Interaktionslogik für StocksDetail.xaml
-    /// </summary>
-    // In StocksDetail.xaml.cs
     public partial class StocksDetail : Window
     {
         private Stock _stock;
@@ -39,11 +22,13 @@ namespace StocksApp
 
         private async void LoadStockDetails()
         {
+            // Show loading text
+            LoadingText.Visibility = Visibility.Visible;
+            StockDetailsListView.Visibility = Visibility.Collapsed;
+
             // Assuming you have TextBlocks or other controls to show these details
             this.Title = _stock.Name; // Example of setting the window title to the stock name
                                       // Set other controls' text here based on the _stock object
-
-
 
             StockName.Text = _stock.Name;
             StockSymbol.Text = $"Symbol: {_stock.Symbol}";
@@ -52,6 +37,9 @@ namespace StocksApp
             // Mock data for detailed stock metrics
             StockDetailsListView.ItemsSource = await _stockApi.GetStockDetailsAsync(_stock.Symbol);
 
+            // Hide loading text and show ListView after data is loaded
+            LoadingText.Visibility = Visibility.Collapsed;
+            StockDetailsListView.Visibility = Visibility.Visible;
         }
 
         private void BackButton_Click(object sender, RoutedEventArgs e)
@@ -63,5 +51,4 @@ namespace StocksApp
             // If you're using a navigation service or a more complex navigation structure, you would call that service/method here instead.
         }
     }
-
 }

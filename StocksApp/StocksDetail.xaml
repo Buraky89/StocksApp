@@ -15,8 +15,10 @@
             <TextBlock x:Name="StockSymbol"/>
             <TextBlock x:Name="StockExchange"/>
         </StackPanel>
+        <!-- Loading message -->
+        <TextBlock x:Name="LoadingText" Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="20" FontWeight="Bold" Visibility="Collapsed">Loading...</TextBlock>
         <!-- Detailed Stock Metrics -->
-        <ListView x:Name="StockDetailsListView" Grid.Row="2">
+        <ListView x:Name="StockDetailsListView" Grid.Row="2" Visibility="Collapsed">
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="Date" DisplayMemberBinding="{Binding Date}" />
