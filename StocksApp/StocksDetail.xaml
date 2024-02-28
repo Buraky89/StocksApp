@@ -8,13 +8,18 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Button x:Name="BackButton" Content="Back" Grid.Row="0" Click="BackButton_Click"/>
-        <StackPanel Grid.Row="1">
-            <TextBlock Text="{Binding date}" FontWeight="Bold"/>
-            <TextBlock Text="Open: {Binding open}"/>
-            <TextBlock Text="Low: {Binding low}"/>
-            <TextBlock Text="High: {Binding high}"/>
-            <TextBlock Text="Close: {Binding close}"/>
-            <TextBlock Text="Volume: {Binding volume}"/>
-        </StackPanel>
+        <ListView x:Name="StockDetailsListView">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="Date" DisplayMemberBinding="{Binding Date}" />
+                    <GridViewColumn Header="Open" DisplayMemberBinding="{Binding Open}" />
+                    <GridViewColumn Header="Low" DisplayMemberBinding="{Binding Low}" />
+                    <GridViewColumn Header="High" DisplayMemberBinding="{Binding High}" />
+                    <GridViewColumn Header="Close" DisplayMemberBinding="{Binding Close}" />
+                    <GridViewColumn Header="Volume" DisplayMemberBinding="{Binding Volume}" />
+                </GridView>
+            </ListView.View>
+        </ListView>
+
     </Grid>
 </Window>

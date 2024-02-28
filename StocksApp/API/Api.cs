@@ -25,5 +25,31 @@ namespace StocksApp
             return stocks;
         }
 
+        public static List<StockDetail> GetMockStockDetails()
+        {
+            return new List<StockDetail>
+        {
+                new StockDetail
+                {
+                    Date = "2023-03-02 16:00:00",
+                    Open = 145.92m,
+                    Low = 145.72m,
+                    High = 146.00m,
+                    Close = 145.79m,
+                    Volume = 1492644
+                },
+                new StockDetail
+                {
+                    Date = "2023-03-02 15:00:00",
+                    Open = 142.92m,
+                    Low = 141.72m,
+                    High = 143.00m,
+                    Close = 141.79m,
+                    Volume = 1492633
+                }
+            };
+        }
+
+
     }
 }

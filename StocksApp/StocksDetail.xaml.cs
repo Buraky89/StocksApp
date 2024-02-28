@@ -36,6 +36,11 @@ namespace StocksApp
             // Assuming you have TextBlocks or other controls to show these details
             this.Title = _stock.Name; // Example of setting the window title to the stock name
                                       // Set other controls' text here based on the _stock object
+
+
+            // Assuming you have a ListView named StockDetailsListView in your XAML
+            StockDetailsListView.ItemsSource = StocksApi.GetMockStockDetails();
+
         }
 
         private void BackButton_Click(object sender, RoutedEventArgs e)
