@@ -49,41 +49,98 @@ namespace StocksApp.API
         public async Task<List<Stock>> GetStocksAsync()
         {
             var response = await _httpClient.GetAsync($"{StocksEndpoint}?apikey={ApiKey}");
-            response.EnsureSuccessStatusCode();
-            var content = await response.Content.ReadAsStringAsync();
-            var allStocks = JsonConvert.DeserializeObject<List<FmpStock>>(content);
-            return FmpStocksToStocks(allStocks);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var content = await response.Content.ReadAsStringAsync();
+                if (string.IsNullOrWhiteSpace(content) || content == "[]")
+                {
+                    throw new ApiException(1, "empty data returned");
+                }
+                var allStocks = JsonConvert.DeserializeObject<List<FmpStock>>(content);
+                return FmpStocksToStocks(allStocks);
+            }
+            else
+            {
+                await HandleErrorResponse(response);
+                return null;
+            }
         }
+
+        private async Task HandleErrorResponse(HttpResponseMessage response)
+        {
+            var content = await response.Content.ReadAsStringAsync();
+            if (response.StatusCode == System.Net.HttpStatusCode.InternalServerError)
+            {
+                throw new ApiException(2, "internal server error");
+            }
+            else
+            {
+                try
+                {
+                    var errorObj = JsonConvert.DeserializeObject<Dictionary<string, string>>(content);
+                    if (errorObj.ContainsKey("Error Message"))
+                    {
+                        throw new ApiException(0, errorObj["Error Message"]);
+                    }
+                    else
+                    {
+                        throw new ApiException(-1, "An unknown error occurred.");
+                    }
+                }
+                catch (JsonException)
+                {
+                    throw new ApiException(-1, "Failed to parse error response.");
+                }
+            }
+        }
+
+
 
         public async Task<List<StockDetail>> GetStockDetailsAsync(string symbol, string desiredTimelineOption = "5M", int desiredDateRangeOption = 15)
         {
-            var timelineOption = TimelineOptions.Find(option => option.Value == desiredTimelineOption);
-            if (timelineOption == null)
+
+
+            try
             {
-                throw new ArgumentException("Invalid timeline option specified.", nameof(desiredTimelineOption));
+                var timelineOption = TimelineOptions.Find(option => option.Value == desiredTimelineOption);
+                if (timelineOption == null)
+                {
+                    throw new ArgumentException("Invalid timeline option specified.", nameof(desiredTimelineOption));
+                }
+
+                var dateRangeOption = DateRangeOptions.Find(option => Convert.ToInt32(option.Value) == desiredDateRangeOption);
+                if (dateRangeOption == null)
+                {
+                    throw new ArgumentException("Invalid dateRange option specified.", nameof(desiredDateRangeOption));
+                }
+
+                int daysAgo = Convert.ToInt32(dateRangeOption.Value);
+                DateTime fromDate = DateTime.Now.AddDays(-daysAgo);
+                DateTime toDate = DateTime.Now;
+
+                var from = fromDate.ToString("yyyy-MM-dd");
+                var to = toDate.ToString("yyyy-MM-dd");
+
+                var detailsEndpoint = $"{HistoricalChartEndpoint}/{timelineOption.Value}/{symbol}?from={from}&to={to}&apikey={ApiKey}";
+
+                var response = await _httpClient.GetAsync(detailsEndpoint);
+                if (!response.IsSuccessStatusCode)
+                {
+                    await HandleErrorResponse(response);
+                    return null; // This line is for compilation; HandleErrorResponse will throw.
+                }
+
+                var content = await response.Content.ReadAsStringAsync();
+                var allDetails = JsonConvert.DeserializeObject<List<FmpStockDetail>>(content);
+
+                return FmpStockDetailsToStockDetails(allDetails);
+            }
+            catch (ApiException ex)
+            {
+                throw ex;
             }
 
-            var dateRangeOption = DateRangeOptions.Find(option => Convert.ToInt32(option.Value) == desiredDateRangeOption);
-            if (dateRangeOption == null)
-            {
-                throw new ArgumentException("Invalid dateRange option specified.", nameof(desiredDateRangeOption));
-            }
-
-            int daysAgo = Convert.ToInt32(dateRangeOption.Value);
-            DateTime fromDate = DateTime.Now.AddDays(-daysAgo);
-            DateTime toDate = DateTime.Now;
-
-            var from = fromDate.ToString("yyyy-MM-dd");
-            var to = toDate.ToString("yyyy-MM-dd");
-
-            var detailsEndpoint = $"{HistoricalChartEndpoint}/{timelineOption.Value}/{symbol}?from={from}&to={to}&apikey={ApiKey}";
-
-            var response = await _httpClient.GetAsync(detailsEndpoint);
-            response.EnsureSuccessStatusCode();
-            var content = await response.Content.ReadAsStringAsync();
-            var allDetails = JsonConvert.DeserializeObject<List<FmpStockDetail>>(content);
-
-            return FmpStockDetailsToStockDetails(allDetails);
         }
 
         public async Task<List<Stock>> SearchAsync(string query)

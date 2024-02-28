@@ -21,14 +21,31 @@ namespace StocksApp
 
         private async void LoadMockData()
         {
-            // Show loading text
-            LoadingText.Visibility = Visibility.Visible;
-            StocksListView.Visibility = Visibility.Collapsed;
-            var stocks = await _stockApi.GetStocksAsync();
-            StocksListView.ItemsSource = stocks;
-            // Hide loading text and show ListView
-            LoadingText.Visibility = Visibility.Collapsed;
-            StocksListView.Visibility = Visibility.Visible;
+            try
+            {
+                LoadingText.Visibility = Visibility.Visible;
+                StocksListView.Visibility = Visibility.Collapsed;
+
+                var stocks = await _stockApi.GetStocksAsync();
+
+                StocksListView.ItemsSource = stocks;
+                LoadingText.Visibility = Visibility.Collapsed;
+                StocksListView.Visibility = Visibility.Visible;
+            }
+            catch (ApiException apiException)
+            {
+                LoadingText.Visibility = Visibility.Collapsed;
+                StocksListView.Visibility = Visibility.Collapsed;
+
+                MessageBox.Show($"Error Code: {apiException.ErrorCode} - {apiException.ErrorText}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            catch (Exception ex)
+            {
+                LoadingText.Visibility = Visibility.Collapsed;
+                StocksListView.Visibility = Visibility.Collapsed;
+
+                MessageBox.Show($"An unexpected error occurred: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void StocksListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
