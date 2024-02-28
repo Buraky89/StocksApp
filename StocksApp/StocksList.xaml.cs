@@ -12,11 +12,11 @@ using System.Windows.Shapes;
 namespace StocksApp
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for StocksList.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class StocksList : Window
     {
-        public MainWindow()
+        public StocksList()
         {
             InitializeComponent();
         }
