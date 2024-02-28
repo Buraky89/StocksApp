@@ -112,18 +112,18 @@ namespace StocksApp
 
                 StockDetailsListView.ItemsSource = stockDetails;
                 StockDetailsListView.Visibility = Visibility.Visible;
+                LoadingText.Visibility = Visibility.Collapsed;
             }
             catch (Exception ex)
             {
                 StockDetailsListView.Visibility = Visibility.Hidden;
                 LoadingText.Visibility = Visibility.Visible;
-                LoadingText.Text = "Error";
-                Chart.Visibility = Visibility.Hidden;
+                LoadingText.Text = ex.Message.Length > 100 ? ex.Message.Substring(0, 100) : ex.Message;
+                Chart.Visibility = Visibility.Collapsed;
+                StocksDateRangePanel.Visibility = Visibility.Hidden;
+                TimelineOptionPanel.Visibility = Visibility.Hidden;
+
                 MessageBox.Show($"Error loading stock details: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-            finally
-            {
-                LoadingText.Visibility = Visibility.Collapsed;
             }
         }
 

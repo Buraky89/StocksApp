@@ -24,6 +24,8 @@ namespace StocksApp
 
         private void ConfigureServices(IServiceCollection services)
         {
+
+            //services.AddSingleton<IStockApi, MockStockApi>();
             services.AddSingleton<IStockApi, FmpApi>();
             services.AddHttpClient();
 
