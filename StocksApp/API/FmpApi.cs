@@ -28,15 +28,21 @@ namespace StocksApp.API
             _fmpMappers = new FmpMappers();
             TimelineOptions = new List<TimelineOption>
             {
-                new TimelineOption { Label = "5M", Value = "5min", IsDefault = true },
+                new TimelineOption { Label = "1m", Value = "1min", IsDefault = true },
+                new TimelineOption { Label = "5m", Value = "5min", IsDefault = false },
+                new TimelineOption { Label = "15m", Value = "15min", IsDefault = false },
+                new TimelineOption { Label = "30m", Value = "30min", IsDefault = false },
                 new TimelineOption { Label = "1H", Value = "1hour", IsDefault = false },
-                new TimelineOption { Label = "1Y", Value = "1year", IsDefault = false }
+                new TimelineOption { Label = "4H", Value = "4hour", IsDefault = false },
             };
             DateRangeOptions = new List<DateRangeOption>
             {
                 new DateRangeOption { Label = "1 Day", Value = 1, IsDefault = true },
                 new DateRangeOption { Label = "15 Days", Value = 15, IsDefault = false },
-                new DateRangeOption { Label = "1 Month", Value = 30, IsDefault = false }
+                new DateRangeOption { Label = "30 Days", Value = 30, IsDefault = false },
+                new DateRangeOption { Label = "90 Days", Value = 90, IsDefault = false },
+                new DateRangeOption { Label = "180 Months", Value = 180, IsDefault = false },
+                new DateRangeOption { Label = "365 Days", Value = 365, IsDefault = false }
             };
         }
 
