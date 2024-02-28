@@ -20,46 +20,17 @@ namespace StocksApp
         private string _desiredTimelineOption = "5min";
         private int _howManyDays = 15;
 
+
         public StocksDetail(Stock stock, IStockApi stockApi)
         {
             InitializeComponent();
             _stock = stock;
             _stockApi = stockApi;
-            LoadStockDetails();
+
+            LoadAndDisplayStockDetails(_desiredTimelineOption, _howManyDays).ConfigureAwait(false);
+
             LoadTimelineOptionButtons();
             LoadStocksDateRangeButtons();
-        }
-
-        private async void LoadStockDetails()
-        {
-            try
-            {
-                LoadingText.Text = "Loading...";
-                LoadingText.Visibility = Visibility.Visible;
-                StockDetailsListView.Visibility = Visibility.Collapsed;
-
-                this.Title = _stock.Name;
-
-                StockName.Text = _stock.Name;
-                StockSymbol.Text = $"Symbol: {_stock.Symbol}";
-                StockExchange.Text = $"Exchange: {_stock.Exchange}";
-
-                var stockDetails = await _stockApi.GetStockDetailsAsync(_stock.Symbol);
-
-                var series = GenerateSeriesFromStockDetails(stockDetails);
-                UpdateChart(series);
-
-
-                LoadingText.Visibility = Visibility.Collapsed; // Hide loading text after successful load
-                StockDetailsListView.ItemsSource = stockDetails;
-                StockDetailsListView.Visibility = Visibility.Visible;
-            }
-            catch (Exception ex)
-            {
-                LoadingText.Text = "Error";
-                MessageBox.Show($"Error loading stock details: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-
         }
 
         private SeriesCollection GenerateSeriesFromStockDetails(IEnumerable<StockDetail> stockDetails)
