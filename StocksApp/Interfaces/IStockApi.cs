@@ -1,8 +1,5 @@
 ﻿using StocksApp.Model;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace StocksApp.Interfaces
@@ -11,6 +8,6 @@ namespace StocksApp.Interfaces
     {
         Task<List<Stock>> GetStocksAsync();
         Task<List<StockDetail>> GetStockDetailsAsync(string symbol);
+        Task<List<Stock>> SearchAsync(string query);
     }
-
 }

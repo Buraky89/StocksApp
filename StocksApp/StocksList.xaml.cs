@@ -26,7 +26,7 @@ namespace StocksApp
         {
             InitializeComponent();
             // TODO: setup dependency injection and remove this
-            _stockApi = new MockStockApi();
+            _stockApi = new FmpApi(new System.Net.Http.HttpClient());
             LoadMockData();
         }
 
@@ -45,6 +45,24 @@ namespace StocksApp
 
                 // Reset the selection in the ListView
                 StocksListView.SelectedItem = null;
+            }
+        }
+
+        private async void SearchBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                try
+                {
+                    var searchQuery = SearchBox.Text;
+                    var searchResults = await _stockApi.SearchAsync(searchQuery);
+                    StocksListView.ItemsSource = searchResults;
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error during search: {ex.Message}");
+                    // Handle exceptions or errors as appropriate
+                }
             }
         }
 

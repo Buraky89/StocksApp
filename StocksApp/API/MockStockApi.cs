@@ -2,6 +2,7 @@
 using StocksApp.Model;
 using System;
 using System.Collections.Generic;
+using System.DirectoryServices;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -50,5 +51,30 @@ namespace StocksApp.API
                 }
             };
         }
+
+
+        public async Task<List<Stock>> SearchAsync(string query)
+        {
+            return new List<Stock>
+            {
+                new Stock
+                {
+                    Symbol = "AA",
+                    Name = "Alcoa Corporation",
+                    Exchange = "New York Stock Exchange",
+                    ExchangeShortName = "NYSE",
+                    Price = "", // You can assign default value or leave it blank
+                },
+                new Stock
+                {
+                    Symbol = "AAU",
+                    Name = "Almaden Minerals Ltd.",
+                    Exchange = "American Stock Exchange",
+                    ExchangeShortName = "AMEX",
+                    Price = "", // You can assign default value or leave it blank
+                }
+            };
+        }
+
     }
 }

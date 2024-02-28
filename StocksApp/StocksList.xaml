@@ -7,7 +7,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <TextBox x:Name="SearchBox" Grid.Row="0" Margin="10"/>
+        <TextBox x:Name="SearchBox" Grid.Row="0" Margin="10" KeyDown="SearchBox_KeyDown"/>
         <ListView x:Name="StocksListView" Grid.Row="1" Margin="10" SelectionChanged="StocksListView_SelectionChanged">
             <ListView.ItemTemplate>
                 <DataTemplate>

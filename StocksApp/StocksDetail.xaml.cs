@@ -33,7 +33,7 @@ namespace StocksApp
             InitializeComponent();
             _stock = stock;
             // TODO: setup dependency injection and remove this
-            _stockApi = new MockStockApi();
+            _stockApi = new FmpApi(new System.Net.Http.HttpClient());
             LoadStockDetails();
         }
 
