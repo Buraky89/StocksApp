@@ -9,6 +9,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
+
 namespace StocksApp
 {
     /// <summary>
@@ -19,6 +20,13 @@ namespace StocksApp
         public StocksList()
         {
             InitializeComponent();
+            LoadMockData();
         }
+
+        private void LoadMockData()
+        {
+            StocksListView.ItemsSource = StocksApi.GetMockStocks();
+        }
+
     }
 }

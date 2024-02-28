@@ -12,13 +12,15 @@
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <StackPanel>
-                        <TextBlock Text="{Binding name}" FontWeight="Bold"/>
-                        <TextBlock Text="{Binding symbol}"/>
-                        <TextBlock Text="{Binding currency}"/>
-                        <TextBlock Text="{Binding stockExchange}"/>
+                        <TextBlock Text="{Binding Name}" FontWeight="Bold"/>
+                        <TextBlock Text="{Binding Symbol}"/>
+                        <TextBlock Text="{Binding Exchange}"/>
+                        <TextBlock Text="{Binding ExchangeShortName}"/>
+                        <TextBlock Text="{Binding Price}"/>
                     </StackPanel>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
+
     </Grid>
 </Window>
