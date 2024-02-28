@@ -1,9 +1,11 @@
-﻿using StocksApp.Interfaces;
+﻿using StocksApp.External.Fmp;
+using StocksApp.Interfaces;
 using StocksApp.Model;
 using System;
 using System.Collections.Generic;
 using System.DirectoryServices;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -11,6 +13,17 @@ namespace StocksApp.API
 {
     public class MockStockApi : IStockApi
     {
+        public List<TimelineOption> TimelineOptions { get; private set; }
+        public MockStockApi()
+        {
+            TimelineOptions = new List<TimelineOption>
+            {
+                new TimelineOption { Label = "5M", Value = "5min", IsDefault = true },
+                new TimelineOption { Label = "1H", Value = "1hour", IsDefault = false },
+                new TimelineOption { Label = "1Y", Value = "1year", IsDefault = false }
+            };
+        }
+
         public async Task<List<Stock>> GetStocksAsync()
         {
             var stocks = new List<Model.Stock>
@@ -27,7 +40,7 @@ namespace StocksApp.API
             return stocks;
         }
 
-        public async Task<List<StockDetail>> GetStockDetailsAsync(string symbol)
+        public async Task<List<StockDetail>> GetStockDetailsAsync(string symbol, string desiredTimelineOption = "5min")
         {
             return new List<StockDetail>
         {

@@ -14,16 +14,22 @@ namespace StocksApp.API
         private readonly HttpClient _httpClient;
         private const string ApiKey = "b89odf7V3VVFAcjAs8VOL5PnPXaGnDXq";
         private const string StocksEndpoint = "https://financialmodelingprep.com/api/v3/stock/list";
-        private const string HistoricalChartEndpoint = "https://financialmodelingprep.com/api/v3/historical-chart/5min";
+        private const string HistoricalChartEndpoint = "https://financialmodelingprep.com/api/v3/historical-chart";
         private const string SearchEndpoint = "https://financialmodelingprep.com/api/v3/search";
 
-        // Create an instance of FmpMappers
         private readonly FmpMappers _fmpMappers;
+        public List<TimelineOption> TimelineOptions { get; private set; }
 
         public FmpApi(HttpClient httpClient)
         {
             _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
-            _fmpMappers = new FmpMappers(); // Initialize the mapper
+            _fmpMappers = new FmpMappers();
+            TimelineOptions = new List<TimelineOption>
+            {
+                new TimelineOption { Label = "5M", Value = "5min", IsDefault = true },
+                new TimelineOption { Label = "1H", Value = "1hour", IsDefault = false },
+                new TimelineOption { Label = "1Y", Value = "1year", IsDefault = false }
+            };
         }
 
         public async Task<List<Stock>> GetStocksAsync()
@@ -32,22 +38,26 @@ namespace StocksApp.API
             response.EnsureSuccessStatusCode();
             var content = await response.Content.ReadAsStringAsync();
             var allStocks = JsonConvert.DeserializeObject<List<FmpStock>>(content);
-            // Return only the top 5 items
             return FmpStocksToStocks(allStocks);
         }
 
-        public async Task<List<StockDetail>> GetStockDetailsAsync(string symbol)
+        public async Task<List<StockDetail>> GetStockDetailsAsync(string symbol, string desiredTimelineOption = "5M")
         {
+            var timelineOption = TimelineOptions.Find(option => option.Value == desiredTimelineOption);
+            if (timelineOption == null)
+            {
+                throw new ArgumentException("Invalid timeline option specified.", nameof(desiredTimelineOption));
+            }
+
             var from = "2023-08-10";
             var to = "2023-09-10";
-            var detailsEndpoint = $"{HistoricalChartEndpoint}/{symbol}?from={from}&to={to}&apikey={ApiKey}";
+            var detailsEndpoint = $"{HistoricalChartEndpoint}/{timelineOption.Value}/{symbol}?from={from}&to={to}&apikey={ApiKey}";
 
             var response = await _httpClient.GetAsync(detailsEndpoint);
             response.EnsureSuccessStatusCode();
             var content = await response.Content.ReadAsStringAsync();
             var allDetails = JsonConvert.DeserializeObject<List<FmpStockDetail>>(content);
 
-            // Return only the top 5 items
             return FmpStockDetailsToStockDetails(allDetails);
         }
 
@@ -60,24 +70,19 @@ namespace StocksApp.API
             var content = await response.Content.ReadAsStringAsync();
             var searchResults = JsonConvert.DeserializeObject<List<FmpSearchResult>>(content);
 
-            // Return only the top 10 items
             return FmpSearchResultToStocks(searchResults.GetRange(0, Math.Min(10, searchResults.Count)));
         }
 
-        // Mapper method for converting FmpSearchResult to Stock
         private List<Stock> FmpSearchResultToStocks(List<FmpSearchResult> searchResults)
         {
-            // Use the FmpMappers instance to map search results to stocks
             return _fmpMappers.FmpSearchResultToStocks(searchResults);
         }
 
-        // Mapper method for converting FmpStock to Stock
         private List<Stock> FmpStocksToStocks(List<FmpStock> fmpStocks)
         {
             return _fmpMappers.FmpStocksToStocks(fmpStocks);
         }
 
-        // Mapper method for converting FmpStockDetail to StockDetail
         private List<StockDetail> FmpStockDetailsToStockDetails(List<FmpStockDetail> fmpStockDetails)
         {
             return _fmpMappers.FmpStockDetailsToStockDetails(fmpStockDetails);

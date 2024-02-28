@@ -6,6 +6,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Button x:Name="BackButton" Content="Back" Grid.Row="0" Click="BackButton_Click"/>
@@ -17,8 +18,12 @@
         </StackPanel>
         <!-- Loading message -->
         <TextBlock x:Name="LoadingText" Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="20" FontWeight="Bold" Visibility="Collapsed">Loading...</TextBlock>
+        <!-- Timeline Option Buttons -->
+        <WrapPanel x:Name="TimelineOptionPanel" Grid.Row="2" Margin="5" Orientation="Horizontal">
+            <!-- Buttons will be added dynamically here -->
+        </WrapPanel>
         <!-- Detailed Stock Metrics -->
-        <ListView x:Name="StockDetailsListView" Grid.Row="2" Visibility="Collapsed">
+        <ListView x:Name="StockDetailsListView" Grid.Row="3" Visibility="Collapsed">
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="Date" DisplayMemberBinding="{Binding Date}" />

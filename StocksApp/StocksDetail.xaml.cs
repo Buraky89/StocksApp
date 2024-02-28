@@ -3,6 +3,7 @@ using StocksApp.Interfaces;
 using StocksApp.Model;
 using System;
 using System.Windows;
+using System.Windows.Controls;
 
 namespace StocksApp
 {
@@ -18,6 +19,7 @@ namespace StocksApp
             // TODO: setup dependency injection and remove this
             _stockApi = new FmpApi(new System.Net.Http.HttpClient());
             LoadStockDetails();
+            LoadTimelineOptionButtons();
         }
 
         private async void LoadStockDetails()
@@ -49,6 +51,47 @@ namespace StocksApp
             this.Close();
 
             // If you're using a navigation service or a more complex navigation structure, you would call that service/method here instead.
+        }
+        private void LoadTimelineOptionButtons()
+        {
+            foreach (var timelineOption in _stockApi.TimelineOptions)
+            {
+                var button = new Button
+                {
+                    Content = timelineOption.Label,
+                    Tag = timelineOption.Value // Store the timeline option value as the button's tag
+                };
+                button.Click += TimelineOptionButton_Click; // Wire up the click event
+                TimelineOptionPanel.Children.Add(button); // Add the button to the panel
+            }
+        }
+
+        private async void TimelineOptionButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button button && button.Tag is string timelineOptionValue)
+            {
+                try
+                {
+                    LoadingText.Visibility = Visibility.Visible; // Show loading text
+                    StockDetailsListView.Visibility = Visibility.Collapsed; // Hide stock details
+
+                    // Load stock details for the selected timeline option
+                    var stockDetails = await _stockApi.GetStockDetailsAsync(_stock.Symbol, timelineOptionValue);
+
+                    // Update UI with loaded stock details
+                    StockDetailsListView.ItemsSource = stockDetails;
+                    StockDetailsListView.Visibility = Visibility.Visible; // Show stock details
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error loading stock details: {ex.Message}");
+                    // Handle error loading stock details
+                }
+                finally
+                {
+                    LoadingText.Visibility = Visibility.Collapsed; // Hide loading text
+                }
+            }
         }
     }
 }
