@@ -1,15 +1,16 @@
-﻿using StocksApp.Model;
+﻿using StocksApp.Interfaces;
+using StocksApp.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace StocksApp
+namespace StocksApp.API
 {
-    public static class StocksApi
+    public class MockStockApi : IStockApi
     {
-        public static List<Model.Stock> GetMockStocks()
+        public async Task<List<Stock>> GetStocksAsync()
         {
             var stocks = new List<Model.Stock>
             {
@@ -25,7 +26,7 @@ namespace StocksApp
             return stocks;
         }
 
-        public static List<StockDetail> GetMockStockDetails()
+        public async Task<List<StockDetail>> GetStockDetailsAsync(string symbol)
         {
             return new List<StockDetail>
         {
@@ -49,7 +50,5 @@ namespace StocksApp
                 }
             };
         }
-
-
     }
 }

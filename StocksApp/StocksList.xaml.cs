@@ -1,4 +1,6 @@
-﻿using StocksApp.Model;
+﻿using StocksApp.API;
+using StocksApp.Interfaces;
+using StocksApp.Model;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -18,15 +20,19 @@ namespace StocksApp
     /// </summary>
     public partial class StocksList : Window
     {
+        private readonly IStockApi _stockApi;
+
         public StocksList()
         {
             InitializeComponent();
+            // TODO: setup dependency injection and remove this
+            _stockApi = new MockStockApi();
             LoadMockData();
         }
 
-        private void LoadMockData()
+        private async void LoadMockData()
         {
-            StocksListView.ItemsSource = StocksApi.GetMockStocks();
+            StocksListView.ItemsSource = await _stockApi.GetStocksAsync();
         }
 
         private void StocksListView_SelectionChanged(object sender, SelectionChangedEventArgs e)

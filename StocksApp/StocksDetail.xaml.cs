@@ -1,4 +1,6 @@
-﻿using StocksApp.Model;
+﻿using StocksApp.API;
+using StocksApp.Interfaces;
+using StocksApp.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,15 +26,18 @@ namespace StocksApp
     public partial class StocksDetail : Window
     {
         private Stock _stock;
+        private readonly IStockApi _stockApi;
 
         public StocksDetail(Stock stock)
         {
             InitializeComponent();
             _stock = stock;
+            // TODO: setup dependency injection and remove this
+            _stockApi = new MockStockApi();
             LoadStockDetails();
         }
 
-        private void LoadStockDetails()
+        private async void LoadStockDetails()
         {
             // Assuming you have TextBlocks or other controls to show these details
             this.Title = _stock.Name; // Example of setting the window title to the stock name
@@ -45,7 +50,7 @@ namespace StocksApp
             StockExchange.Text = $"Exchange: {_stock.Exchange}";
 
             // Mock data for detailed stock metrics
-            StockDetailsListView.ItemsSource = StocksApi.GetMockStockDetails();
+            StockDetailsListView.ItemsSource = await _stockApi.GetStockDetailsAsync(_stock.Symbol);
 
         }
 
