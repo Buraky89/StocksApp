@@ -4,7 +4,6 @@ using System.Data;
 using System.Windows;
 using Microsoft.Extensions.DependencyInjection;
 using StocksApp.Interfaces;
-using StocksApp.Caching;
 using System.Net.Http;
 
 namespace StocksApp
